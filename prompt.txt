@@ -1,0 +1,13 @@
+Complete the UART transmitter implementation in the sources/ directory.
+
+The module port lists, parameters, and localparams are already provided in each file. You must fill in all internal RTL. The design is split across five files:
+
+  sources/fifo_mem.sv   — Dual-port RAM (async read, sync write, no reset)
+  sources/fifo_ctrl.sv  — FIFO pointer logic and full/empty flags
+  sources/fifo.sv       — FIFO top-level (instantiates fifo_mem and fifo_ctrl)
+  sources/uart_tx.sv    — TX shift-register FSM with flow control
+  sources/uart_tx_top.sv — Top-level wrapper (instantiates TX FIFO and uart_tx)
+
+Hidden cocotb tests will exercise FIFO ordering, the TX serial frame format
+(start bit, 8 data bits LSB-first, stop bit), back-to-back transmission of
+multiple bytes, and CTS flow-control gating.
