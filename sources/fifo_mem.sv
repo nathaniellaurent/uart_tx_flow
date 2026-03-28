@@ -13,12 +13,11 @@ module fifo_mem #(
   output logic [DataWidth-1:0] o_rd_data
 );
 
-  // TODO: Implement dual-port RAM
-  //
-  // Requirements:
-  //   - Storage array: DataWidth-bit words, Depth entries deep
-  //   - Asynchronous (combinational) read: o_rd_data = memory[i_rd_addr]
-  //   - Synchronous write: on posedge i_clk, if i_wr_en, write i_wr_data to memory[i_wr_addr]
-  //   - No reset required for memory contents
-
+  logic [DataWidth-1:0] memory [Depth];
+  assign o_rd_data = memory[i_rd_addr];
+  
+  always_ff @(posedge i_clk) begin
+    if (i_wr_en) memory[i_wr_addr] <= i_wr_data;
+  end
+  
 endmodule

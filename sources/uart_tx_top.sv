@@ -19,13 +19,39 @@ module uart_tx_top #(
   input  logic        i_cts
 );
 
-  // TODO: Implement internal logic
-  //
-  // Required submodules and logic:
-  //   - TX FIFO (fifo instance, FWFT mode) for transmit data buffering
-  //   - uart_tx instance for serial transmission
-  //   - o_tx_rdy driven from TX FIFO full flag (inverted)
-  //   - Wire the FIFO's read data and empty flag to uart_tx's inputs
-  //   - Wire uart_tx's o_tx_fifo_read_en back to the FIFO's read enable
+  logic [DataLength-1:0] uart_tx_fifo_data;
+  logic tx_fifo_full, tx_fifo_empty;
+  logic uart_tx_fifo_read_en;
+
+  fifo #(
+    .DataWidth(DataLength),
+    .Depth(FifoDepth)
+  ) fifo_tx (
+    .i_clk,
+    .i_rst_n,
+    .i_wr_data(i_tx_data),
+    .i_wr_en(i_tx_req),
+    .i_rd_en(uart_tx_fifo_read_en),
+    .o_rd_data(uart_tx_fifo_data),
+    .o_full(tx_fifo_full),
+    .o_empty(tx_fifo_empty)
+  );
+
+  assign o_tx_rdy = ~tx_fifo_full;
+
+  uart_tx #(
+    .DataLength(DataLength),
+    .FlowControl(FlowControl),
+    .SystemClockFreq(SystemClockFreq),
+    .BaudRate(BaudRate)
+  ) uart_tx_inst (
+    .i_clk,
+    .i_rst_n,
+    .o_tx,
+    .i_cts,
+    .i_tx_fifo_data(uart_tx_fifo_data),
+    .i_tx_fifo_empty(tx_fifo_empty),
+    .o_tx_fifo_read_en(uart_tx_fifo_read_en)
+  );
 
 endmodule

@@ -16,12 +16,42 @@ module fifo #(
   output logic                 o_empty
 );
 
-  // TODO: Implement FIFO top-level
-  //
-  // Requirements:
-  //   - Instantiate fifo_mem for storage (dual-port RAM, async read, sync write)
-  //   - Instantiate fifo_ctrl for pointer management and flag generation
-  //   - If FWFT == 1: o_rd_data always reflects the head of the FIFO (combinational read)
-  //   - If FWFT == 0: o_rd_data is gated by i_rd_en (output 0 when not reading)
+  logic [DataWidth-1:0] mem_rd_data;
+  logic [PtrWidth-1:0]  wr_addr, rd_addr;
+  
+  generate 
+    if (FWFT)
+      assign o_rd_data = mem_rd_data;
+    else
+      //assign o_rd_data = mem_rd_data;
+      assign o_rd_data = i_rd_en ? mem_rd_data : '0;
+  endgenerate
 
+  fifo_mem #(
+    .DataWidth(DataWidth),
+    .Depth(Depth)
+  ) fifo_mem (
+    .i_clk,
+    .i_wr_data,
+    .i_wr_addr(wr_addr),
+    .i_wr_en,
+    .i_rd_addr(rd_addr),
+    .o_rd_data(mem_rd_data)
+  );
+
+  fifo_ctrl #(
+    .DataWidth(DataWidth),
+    .Depth(Depth)
+  ) fifo_ctrl (
+    .i_clk,
+    .i_rst_n,
+    .i_wr_en,
+    .i_rd_en,
+    .o_rd_addr(rd_addr),
+    .o_wr_addr(wr_addr),
+    .o_full,
+    .o_empty
+  );
+  
 endmodule
+
