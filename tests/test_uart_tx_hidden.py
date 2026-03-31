@@ -97,6 +97,32 @@ async def uart_tx_basic(dut):
 
 
 @cocotb.test(timeout_time=100, timeout_unit="ms")
+async def uart_tx_known_patterns(dut):
+    """Test TX with known bit patterns pre-loaded to catch stale-data and bit-ordering bugs."""
+    clock = Clock(dut.i_clk, CLOCK_PERIOD_NS, unit="ns")
+    clock.start(start_high=False)
+    await reset_dut(dut)
+
+    # Pre-load all patterns into FIFO on consecutive clock cycles before
+    # any transmission starts. This catches bugs where the FIFO read-advance
+    # is delayed (e.g. registered o_tx_fifo_read_en), causing frame N+1 to
+    # re-send frame N's data.
+    patterns = [0x00, 0xFF, 0xAA, 0x55, 0x01, 0x80]
+    for val in patterns:
+        dut.i_tx_req.value = 1
+        dut.i_tx_data.value = val
+        await RisingEdge(dut.i_clk)
+    dut.i_tx_req.value = 0
+
+    for i, val in enumerate(patterns):
+        got = await receive_uart_stream(dut)
+        assert got == val, (
+            f"Pattern mismatch at frame {i}: sent {val:#04x} ({val:08b}), "
+            f"received {got:#04x} ({got:08b})"
+        )
+
+
+@cocotb.test(timeout_time=100, timeout_unit="ms")
 async def uart_tx_back_to_back(dut):
     """Test TX path: load FIFO with multiple bytes, verify all serial frames."""
     clock = Clock(dut.i_clk, CLOCK_PERIOD_NS, unit="ns")
@@ -159,6 +185,37 @@ async def uart_tx_cts_flow_control(dut):
     assert got == test_val, f"TX after CTS: sent {test_val:#04x}, received {got:#04x}"
 
 
+@cocotb.test(timeout_time=200, timeout_unit="ms")
+async def uart_tx_cts_between_frames(dut):
+    """Test CTS de-asserted between frames pauses TX."""
+    clock = Clock(dut.i_clk, CLOCK_PERIOD_NS, unit="ns")
+    clock.start(start_high=False)
+    await reset_dut(dut)
+
+    val_a = random.randint(0, 255)
+    val_b = random.randint(0, 255)
+
+    # Write two bytes
+    await fifo_tx_write(dut, val_a)
+    await fifo_tx_write(dut, val_b)
+
+    # Receive first frame
+    got_a = await receive_uart_stream(dut)
+    assert got_a == val_a, f"Frame A mismatch: sent {val_a:#04x}, got {got_a:#04x}"
+
+    # De-assert CTS immediately after first frame
+    dut.i_cts.value = 0
+
+    # Wait — second frame should NOT start
+    await Timer(BIT_PERIOD_NS * 3, unit="ns")
+    assert dut.o_tx.value == 1, "o_tx should stay high with CTS de-asserted between frames"
+
+    # Re-assert CTS — second frame should transmit
+    dut.i_cts.value = 1
+    got_b = await receive_uart_stream(dut)
+    assert got_b == val_b, f"Frame B mismatch: sent {val_b:#04x}, got {got_b:#04x}"
+
+
 @cocotb.test(timeout_time=50, timeout_unit="ms")
 async def uart_tx_fifo_full(dut):
     """Test that o_tx_rdy goes low when FIFO is full."""
@@ -192,16 +249,58 @@ async def uart_tx_fifo_full(dut):
     assert dut.o_tx_rdy.value == 1, "o_tx_rdy should be 1 after draining one entry"
 
 
+@cocotb.test(timeout_time=50, timeout_unit="ms")
+async def uart_tx_reset_mid_frame(dut):
+    """Test that reset during transmission returns o_tx to idle high."""
+    clock = Clock(dut.i_clk, CLOCK_PERIOD_NS, unit="ns")
+    clock.start(start_high=False)
+    await reset_dut(dut)
+
+    # Start transmitting
+    await fifo_tx_write(dut, 0xAA)
+
+    # Wait for start bit to appear
+    for _ in range(MAX_WAIT_CYCLES):
+        if dut.o_tx.value == 0:
+            break
+        await RisingEdge(dut.i_clk)
+
+    # Wait partway through the frame (into the data bits)
+    await Timer(BIT_PERIOD_NS * 3, unit="ns")
+
+    # Assert reset mid-frame
+    dut.i_rst_n.value = 0
+    await RisingEdge(dut.i_clk)
+    await RisingEdge(dut.i_clk)
+
+    # o_tx should return to idle high after reset
+    assert dut.o_tx.value == 1, "o_tx should be idle high after reset"
+
+    # Release reset and verify normal operation resumes
+    dut.i_rst_n.value = 1
+    await RisingEdge(dut.i_clk)
+    await RisingEdge(dut.i_clk)
+
+    assert dut.o_tx.value == 1, "o_tx should remain idle high after reset release"
+    assert dut.o_tx_rdy.value == 1, "o_tx_rdy should be 1 after reset (FIFO cleared)"
+
+    # Verify TX still works after reset
+    test_val = random.randint(0, 255)
+    await fifo_tx_write(dut, test_val)
+    got = await receive_uart_stream(dut)
+    assert got == test_val, f"TX after reset: sent {test_val:#04x}, received {got:#04x}"
+
+
 def test_uart_tx_hidden_runner():
     sim = os.getenv("SIM", "icarus")
     proj_path = Path(__file__).resolve().parent.parent
 
     sources = [
-        proj_path / "sources" / "uart_tx_top.sv",
+        proj_path / "sources" /  "uart_tx_top.sv",
         proj_path / "sources" / "uart_tx.sv",
-        proj_path / "sources" / "fifo.sv",
-        proj_path / "sources" / "fifo_ctrl.sv",
-        proj_path / "sources" / "fifo_mem.sv",
+        proj_path / "sources" /  "fifo.sv",
+        proj_path / "sources" /  "fifo_ctrl.sv",
+        proj_path / "sources" /  "fifo_mem.sv",
     ]
 
     runner = get_runner(sim)
