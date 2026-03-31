@@ -116,7 +116,16 @@ async def fifo_simultaneous_write_read(dut):
     dut.i_wr_en.value = 0
     dut.i_rd_en.value = 1
     await RisingEdge(dut.i_clk)
+    got = int(dut.o_rd_data.value)
+    assert got == test_data[DEPTH-1], (
+            f"Pipeline mismatch at index {DEPTH-1}: expected {test_data[DEPTH-1]:#x}, got {got:#x}"
+        )
     dut.i_rd_en.value = 0
+
+    await RisingEdge(dut.i_clk)
+    # Ensure FIFO is empty after last read
+    assert dut.o_empty.value == 1
+    
 
 
 @cocotb.test(timeout_time=50, timeout_unit="ms")

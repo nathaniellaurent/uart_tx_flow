@@ -197,11 +197,11 @@ def test_uart_tx_hidden_runner():
     proj_path = Path(__file__).resolve().parent.parent
 
     sources = [
-        proj_path / "golden" / "uart_tx_top.sv",
-        proj_path / "golden" / "uart_tx.sv",
-        proj_path / "golden" / "fifo.sv",
-        proj_path / "golden" / "fifo_ctrl.sv",
-        proj_path / "golden" / "fifo_mem.sv",
+        proj_path / "sources" / "uart_tx_top.sv",
+        proj_path / "sources" / "uart_tx.sv",
+        proj_path / "sources" / "fifo.sv",
+        proj_path / "sources" / "fifo_ctrl.sv",
+        proj_path / "sources" / "fifo_mem.sv",
     ]
 
     runner = get_runner(sim)
