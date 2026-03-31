@@ -117,15 +117,14 @@ async def fifo_simultaneous_write_read(dut):
     dut.i_rd_en.value = 1
     await RisingEdge(dut.i_clk)
     got = int(dut.o_rd_data.value)
-    assert got == test_data[DEPTH-1], (
-            f"Pipeline mismatch at index {DEPTH-1}: expected {test_data[DEPTH-1]:#x}, got {got:#x}"
-        )
+    assert got == test_data[DEPTH - 1], (
+        f"Pipeline mismatch at index {DEPTH - 1}: expected {test_data[DEPTH - 1]:#x}, got {got:#x}"
+    )
     dut.i_rd_en.value = 0
 
     await RisingEdge(dut.i_clk)
     # Ensure FIFO is empty after last read
     assert dut.o_empty.value == 1
-    
 
 
 @cocotb.test(timeout_time=50, timeout_unit="ms")
@@ -151,14 +150,80 @@ async def fifo_reset_clears_state(dut):
     assert dut.o_full.value == 0, "FIFO should not be full after reset"
 
 
+@cocotb.test(timeout_time=50, timeout_unit="ms")
+async def fifo_exact_capacity(dut):
+    """Test 5: Verify FIFO holds exactly DEPTH entries, not DEPTH-1."""
+    clock = Clock(dut.i_clk, 10, unit="ns")
+    clock.start(start_high=False)
+    await reset_dut(dut)
+
+    # Write DEPTH-1 entries — should NOT be full
+    for i in range(DEPTH - 1):
+        dut.i_wr_data.value = i
+        dut.i_wr_en.value = 1
+        await RisingEdge(dut.i_clk)
+    dut.i_wr_en.value = 0
+    await RisingEdge(dut.i_clk)
+
+    assert dut.o_full.value == 0, f"FIFO should NOT be full after {DEPTH - 1} writes"
+    assert dut.o_empty.value == 0, f"FIFO should not be empty after {DEPTH - 1} writes"
+
+    # Write one more — now should be full
+    dut.i_wr_data.value = 0xFF
+    dut.i_wr_en.value = 1
+    await RisingEdge(dut.i_clk)
+    dut.i_wr_en.value = 0
+    await RisingEdge(dut.i_clk)
+
+    assert dut.o_full.value == 1, f"FIFO should be full after exactly {DEPTH} writes"
+
+
+@cocotb.test(timeout_time=50, timeout_unit="ms")
+async def fifo_wrap_around(dut):
+    """Test 6: Write and read more than DEPTH entries to verify pointer wrapping."""
+    clock = Clock(dut.i_clk, 10, unit="ns")
+    clock.start(start_high=False)
+    await reset_dut(dut)
+
+    total_entries = DEPTH * 3  # Cycle through 3x the FIFO depth
+
+    for batch in range(3):
+        test_data = [random.randint(0, (1 << DATA_WIDTH) - 1) for _ in range(DEPTH)]
+
+        # Fill FIFO
+        for val in test_data:
+            dut.i_wr_data.value = val
+            dut.i_wr_en.value = 1
+            await RisingEdge(dut.i_clk)
+        dut.i_wr_en.value = 0
+        await RisingEdge(dut.i_clk)
+
+        assert dut.o_full.value == 1, f"FIFO should be full after batch {batch}"
+
+        # Drain FIFO
+        for i, expected in enumerate(test_data):
+            dut.i_rd_en.value = 1
+            await RisingEdge(dut.i_clk)
+            got = int(dut.o_rd_data.value)
+            assert got == expected, (
+                f"Wrap-around mismatch at batch {batch}, index {i}: "
+                f"expected {expected:#x}, got {got:#x}"
+            )
+        dut.i_rd_en.value = 0
+        await RisingEdge(dut.i_clk)
+
+        assert dut.o_empty.value == 1, f"FIFO should be empty after draining batch {batch}"
+
+
+
 def test_fifo_hidden_runner():
     sim = os.getenv("SIM", "icarus")
     proj_path = Path(__file__).resolve().parent.parent
 
     sources = [
-        proj_path / "golden" / "fifo.sv",
-        proj_path / "golden" / "fifo_ctrl.sv",
-        proj_path / "golden" / "fifo_mem.sv",
+        proj_path / "golden"/ "fifo.sv",
+        proj_path / "golden"/  "fifo_ctrl.sv",
+        proj_path / "golden"/  "fifo_mem.sv",
     ]
 
     runner = get_runner(sim)
