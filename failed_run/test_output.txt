@@ -1,0 +1,858 @@
+{
+  "subscores": {
+    "Tests": 0.0
+  },
+  "weights": {
+    "Tests": 1.0
+  },
+  "metadata": {
+    "junit": "<?xml version=\"1.0\" encoding=\"UTF-8\"?>
+<testsuites>
+  <testsuite name=\"Tests\" tests=\"1\" failures=\"1\" errors=\"0\" skipped=\"0\">
+    <testcase classname=\"Tests\" name=\"testTests\" time=\"0.0\">
+      <failure type='TestFailure'>
+Tests failed
+</failure>
+      <system-out>
+============================= test session starts ==============================
+platform linux -- Python 3.12.3, pytest-9.0.2, pluggy-1.6.0
+rootdir: /tmp/grading_workspace_76d943db-b90f-4431-a754-b2aa66f5fc52
+configfile: pyproject.toml
+collected 2 items
+
+tests/test_fifo_hidden.py F                                              [ 50%]
+tests/test_uart_tx_hidden.py F                                           [100%]
+
+=================================== FAILURES ===================================
+___________________________ test_fifo_hidden_runner ____________________________
+
+    def test_fifo_hidden_runner():
+        sim = os.getenv(\"SIM\", \"icarus\")
+        proj_path = Path(__file__).resolve().parent.parent
+    
+        sources = [
+            proj_path / \"sources\"/ \"fifo.sv\",
+            proj_path / \"sources\"/  \"fifo_ctrl.sv\",
+            proj_path / \"sources\"/  \"fifo_mem.sv\",
+        ]
+    
+        runner = get_runner(sim)
+        runner.build(
+            sources=sources,
+            hdl_toplevel=\"fifo\",
+            always=True,
+        )
+>       runner.test(hdl_toplevel=\"fifo\", test_module=\"test_fifo_hidden\")
+E       SystemExit: 1
+
+tests/test_fifo_hidden.py:235: SystemExit
+----------------------------- Captured stdout call -----------------------------
+     -.--ns INFO     gpi                                ..mbed/gpi_embed.cpp:93   in _embed_init_python              Using Python 3.12.4 interpreter at /home/ubuntu/example-verilog-codebase/.venv/bin/python
+     -.--ns INFO     gpi                                ../gpi/GpiCommon.cpp:79   in gpi_print_registered_impl       VPI registered
+     0.00ns INFO     cocotb                             Running on Icarus Verilog version 12.0 (stable)
+     0.00ns INFO     cocotb                             Seeding Python random module with 1774940354
+     0.00ns INFO     cocotb                             Initialized cocotb v2.0.1 from /home/ubuntu/example-verilog-codebase/.venv/lib/python3.12/site-packages/cocotb
+     0.00ns INFO     cocotb                             Running tests
+     0.00ns INFO     cocotb.regression                  running test_fifo_hidden.fifo_write_then_read (1/6)
+                                                            Test 1: Fill the FIFO completely, then drain it and verify order.
+   115.00ns WARNING  ..e_then_read.fifo_write_then_read FIFO should be full after writing DEPTH entries
+                                                        assert Logic('0') == 1
+                                                         +  where Logic('0') = LogicObject(fifo.o_full).value
+                                                         +    where LogicObject(fifo.o_full) = HierarchyObject(fifo).o_full
+                                                        Traceback (most recent call last):
+                                                          File \"/home/ubuntu/example-verilog-codebase/.venv/lib/python3.12/site-packages/cocotb/regression.py\", line 378, in func
+                                                            await with_timeout(f(*args, **kwargs), timeout, self._test.timeout_unit)
+                                                          File \"/home/ubuntu/example-verilog-codebase/.venv/lib/python3.12/site-packages/cocotb/_extended_awaitables.py\", line 411, in with_timeout
+                                                            res = await First(timeout_timer, trigger)
+                                                                  ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+                                                          File \"/home/ubuntu/example-verilog-codebase/.venv/lib/python3.12/site-packages/cocotb/_extended_awaitables.py\", line 203, in _wait
+                                                            return completed[0].result()
+                                                                   ^^^^^^^^^^^^^^^^^^^^^
+                                                          File \"/home/ubuntu/example-verilog-codebase/.venv/lib/python3.12/site-packages/cocotb/task.py\", line 450, in result
+                                                            return cast(\"Outcome[ResultType]\", self._outcome).get()
+                                                                   ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+                                                          File \"/home/ubuntu/example-verilog-codebase/.venv/lib/python3.12/site-packages/cocotb/_outcomes.py\", line 51, in get
+                                                            raise self.error
+                                                          File \"/home/ubuntu/example-verilog-codebase/.venv/lib/python3.12/site-packages/cocotb/_extended_awaitables.py\", line 73, in _wait_callback
+                                                            return await trigger
+                                                                   ^^^^^^^^^^^^^
+                                                          File \"/home/ubuntu/example-verilog-codebase/.venv/lib/python3.12/site-packages/cocotb/task.py\", line 493, in __await__
+                                                            return self.result()
+                                                                   ^^^^^^^^^^^^^
+                                                          File \"/home/ubuntu/example-verilog-codebase/.venv/lib/python3.12/site-packages/cocotb/task.py\", line 450, in result
+                                                            return cast(\"Outcome[ResultType]\", self._outcome).get()
+                                                                   ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+                                                          File \"/home/ubuntu/example-verilog-codebase/.venv/lib/python3.12/site-packages/cocotb/_outcomes.py\", line 51, in get
+                                                            raise self.error
+                                                          File \"/tmp/grading_workspace_76d943db-b90f-4431-a754-b2aa66f5fc52/tests/test_fifo_hidden.py\", line 49, in fifo_write_then_read
+                                                            assert dut.o_full.value == 1, \"FIFO should be full after writing DEPTH entries\"
+                                                        AssertionError: FIFO should be full after writing DEPTH entries
+                                                        assert Logic('0') == 1
+                                                         +  where Logic('0') = LogicObject(fifo.o_full).value
+                                                         +    where LogicObject(fifo.o_full) = HierarchyObject(fifo).o_full
+   115.00ns WARNING  cocotb.regression                  test_fifo_hidden.fifo_write_then_read failed
+   115.00ns INFO     cocotb.regression                  running test_fifo_hidden.fifo_write_read_interleaved (2/6)
+                                                            Test 2: Write one entry then read one entry, interleaved.
+   460.00ns INFO     cocotb.regression                  test_fifo_hidden.fifo_write_read_interleaved passed
+   460.00ns INFO     cocotb.regression                  running test_fifo_hidden.fifo_simultaneous_write_read (3/6)
+                                                            Test 3: Simultaneous write and read (pipeline style).
+   525.00ns WARNING  ..ead.fifo_simultaneous_write_read Pipeline mismatch at index 2: expected 0x6c, got 0x6a
+                                                        assert 106 == 108
+                                                        Traceback (most recent call last):
+                                                          File \"/home/ubuntu/example-verilog-codebase/.venv/lib/python3.12/site-packages/cocotb/regression.py\", line 378, in func
+                                                            await with_timeout(f(*args, **kwargs), timeout, self._test.timeout_unit)
+                                                          File \"/home/ubuntu/example-verilog-codebase/.venv/lib/python3.12/site-packages/cocotb/_extended_awaitables.py\", line 411, in with_timeout
+                                                            res = await First(timeout_timer, trigger)
+                                                                  ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+                                                          File \"/home/ubuntu/example-verilog-codebase/.venv/lib/python3.12/site-packages/cocotb/_extended_awaitables.py\", line 203, in _wait
+                                                            return completed[0].result()
+                                                                   ^^^^^^^^^^^^^^^^^^^^^
+                                                          File \"/home/ubuntu/example-verilog-codebase/.venv/lib/python3.12/site-packages/cocotb/task.py\", line 450, in result
+                                                            return cast(\"Outcome[ResultType]\", self._outcome).get()
+                                                                   ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+                                                          File \"/home/ubuntu/example-verilog-codebase/.venv/lib/python3.12/site-packages/cocotb/_outcomes.py\", line 51, in get
+                                                            raise self.error
+                                                          File \"/home/ubuntu/example-verilog-codebase/.venv/lib/python3.12/site-packages/cocotb/_extended_awaitables.py\", line 73, in _wait_callback
+                                                            return await trigger
+                                                                   ^^^^^^^^^^^^^
+                                                          File \"/home/ubuntu/example-verilog-codebase/.venv/lib/python3.12/site-packages/cocotb/task.py\", line 493, in __await__
+                                                            return self.result()
+                                                                   ^^^^^^^^^^^^^
+                                                          File \"/home/ubuntu/example-verilog-codebase/.venv/lib/python3.12/site-packages/cocotb/task.py\", line 450, in result
+                                                            return cast(\"Outcome[ResultType]\", self._outcome).get()
+                                                                   ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+                                                          File \"/home/ubuntu/example-verilog-codebase/.venv/lib/python3.12/site-packages/cocotb/_outcomes.py\", line 51, in get
+                                                            raise self.error
+                                                          File \"/tmp/grading_workspace_76d943db-b90f-4431-a754-b2aa66f5fc52/tests/test_fifo_hidden.py\", line 111, in fifo_simultaneous_write_read
+                                                            assert got == test_data[i - 1], (
+                                                        AssertionError: Pipeline mismatch at index 2: expected 0x6c, got 0x6a
+                                                        assert 106 == 108
+   525.00ns WARNING  cocotb.regression                  test_fifo_hidden.fifo_simultaneous_write_read failed
+   525.00ns INFO     cocotb.regression                  running test_fifo_hidden.fifo_reset_clears_state (4/6)
+                                                            Test 4: Reset clears the FIFO to empty.
+   630.00ns INFO     cocotb.regression                  test_fifo_hidden.fifo_reset_clears_state passed
+   630.00ns INFO     cocotb.regression                  running test_fifo_hidden.fifo_exact_capacity (5/6)
+                                                            Test 5: Verify FIFO holds exactly DEPTH entries, not DEPTH-1.
+   755.00ns WARNING  ..act_capacity.fifo_exact_capacity FIFO should be full after exactly 8 writes
+                                                        assert Logic('0') == 1
+                                                         +  where Logic('0') = LogicObject(fifo.o_full).value
+                                                         +    where LogicObject(fifo.o_full) = HierarchyObject(fifo).o_full
+                                                        Traceback (most recent call last):
+                                                          File \"/home/ubuntu/example-verilog-codebase/.venv/lib/python3.12/site-packages/cocotb/regression.py\", line 378, in func
+                                                            await with_timeout(f(*args, **kwargs), timeout, self._test.timeout_unit)
+                                                          File \"/home/ubuntu/example-verilog-codebase/.venv/lib/python3.12/site-packages/cocotb/_extended_awaitables.py\", line 411, in with_timeout
+                                                            res = await First(timeout_timer, trigger)
+                                                                  ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+                                                          File \"/home/ubuntu/example-verilog-codebase/.venv/lib/python3.12/site-packages/cocotb/_extended_awaitables.py\", line 203, in _wait
+                                                            return completed[0].result()
+                                                                   ^^^^^^^^^^^^^^^^^^^^^
+                                                          File \"/home/ubuntu/example-verilog-codebase/.venv/lib/python3.12/site-packages/cocotb/task.py\", line 450, in result
+                                                            return cast(\"Outcome[ResultType]\", self._outcome).get()
+                                                                   ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+                                                          File \"/home/ubuntu/example-verilog-codebase/.venv/lib/python3.12/site-packages/cocotb/_outcomes.py\", line 51, in get
+                                                            raise self.error
+                                                          File \"/home/ubuntu/example-verilog-codebase/.venv/lib/python3.12/site-packages/cocotb/_extended_awaitables.py\", line 73, in _wait_callback
+                                                            return await trigger
+                                                                   ^^^^^^^^^^^^^
+                                                          File \"/home/ubuntu/example-verilog-codebase/.venv/lib/python3.12/site-packages/cocotb/task.py\", line 493, in __await__
+                                                            return self.result()
+                                                                   ^^^^^^^^^^^^^
+                                                          File \"/home/ubuntu/example-verilog-codebase/.venv/lib/python3.12/site-packages/cocotb/task.py\", line 450, in result
+                                                            return cast(\"Outcome[ResultType]\", self._outcome).get()
+                                                                   ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+                                                          File \"/home/ubuntu/example-verilog-codebase/.venv/lib/python3.12/site-packages/cocotb/_outcomes.py\", line 51, in get
+                                                            raise self.error
+                                                          File \"/tmp/grading_workspace_76d943db-b90f-4431-a754-b2aa66f5fc52/tests/test_fifo_hidden.py\", line 178, in fifo_exact_capacity
+                                                            assert dut.o_full.value == 1, f\"FIFO should be full after exactly {DEPTH} writes\"
+                                                        AssertionError: FIFO should be full after exactly 8 writes
+                                                        assert Logic('0') == 1
+                                                         +  where Logic('0') = LogicObject(fifo.o_full).value
+                                                         +    where LogicObject(fifo.o_full) = HierarchyObject(fifo).o_full
+   755.00ns WARNING  cocotb.regression                  test_fifo_hidden.fifo_exact_capacity failed
+   755.00ns INFO     cocotb.regression                  running test_fifo_hidden.fifo_wrap_around (6/6)
+                                                            Test 6: Write and read more than DEPTH entries to verify pointer wrapping.
+   870.00ns WARNING  ..ifo_wrap_around.fifo_wrap_around FIFO should be full after batch 0
+                                                        assert Logic('0') == 1
+                                                         +  where Logic('0') = LogicObject(fifo.o_full).value
+                                                         +    where LogicObject(fifo.o_full) = HierarchyObject(fifo).o_full
+                                                        Traceback (most recent call last):
+                                                          File \"/home/ubuntu/example-verilog-codebase/.venv/lib/python3.12/site-packages/cocotb/regression.py\", line 378, in func
+                                                            await with_timeout(f(*args, **kwargs), timeout, self._test.timeout_unit)
+                                                          File \"/home/ubuntu/example-verilog-codebase/.venv/lib/python3.12/site-packages/cocotb/_extended_awaitables.py\", line 411, in with_timeout
+                                                            res = await First(timeout_timer, trigger)
+                                                                  ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+                                                          File \"/home/ubuntu/example-verilog-codebase/.venv/lib/python3.12/site-packages/cocotb/_extended_awaitables.py\", line 203, in _wait
+                                                            return completed[0].result()
+                                                                   ^^^^^^^^^^^^^^^^^^^^^
+                                                          File \"/home/ubuntu/example-verilog-codebase/.venv/lib/python3.12/site-packages/cocotb/task.py\", line 450, in result
+                                                            return cast(\"Outcome[ResultType]\", self._outcome).get()
+                                                                   ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+                                                          File \"/home/ubuntu/example-verilog-codebase/.venv/lib/python3.12/site-packages/cocotb/_outcomes.py\", line 51, in get
+                                                            raise self.error
+                                                          File \"/home/ubuntu/example-verilog-codebase/.venv/lib/python3.12/site-packages/cocotb/_extended_awaitables.py\", line 73, in _wait_callback
+                                                            return await trigger
+                                                                   ^^^^^^^^^^^^^
+                                                          File \"/home/ubuntu/example-verilog-codebase/.venv/lib/python3.12/site-packages/cocotb/task.py\", line 493, in __await__
+                                                            return self.result()
+                                                                   ^^^^^^^^^^^^^
+                                                          File \"/home/ubuntu/example-verilog-codebase/.venv/lib/python3.12/site-packages/cocotb/task.py\", line 450, in result
+                                                            return cast(\"Outcome[ResultType]\", self._outcome).get()
+                                                                   ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+                                                          File \"/home/ubuntu/example-verilog-codebase/.venv/lib/python3.12/site-packages/cocotb/_outcomes.py\", line 51, in get
+                                                            raise self.error
+                                                          File \"/tmp/grading_workspace_76d943db-b90f-4431-a754-b2aa66f5fc52/tests/test_fifo_hidden.py\", line 201, in fifo_wrap_around
+                                                            assert dut.o_full.value == 1, f\"FIFO should be full after batch {batch}\"
+                                                        AssertionError: FIFO should be full after batch 0
+                                                        assert Logic('0') == 1
+                                                         +  where Logic('0') = LogicObject(fifo.o_full).value
+                                                         +    where LogicObject(fifo.o_full) = HierarchyObject(fifo).o_full
+   870.00ns WARNING  cocotb.regression                  test_fifo_hidden.fifo_wrap_around failed
+   870.00ns INFO     cocotb.regression                  *******************************************************************************************************
+                                                        ** TEST                                           STATUS  SIM TIME (ns)  REAL TIME (s)  RATIO (ns/s) **
+                                                        *******************************************************************************************************
+                                                        ** test_fifo_hidden.fifo_write_then_read           FAIL         115.00           0.00      45333.17  **
+                                                        ** test_fifo_hidden.fifo_write_read_interleaved    PASS         345.00           0.00     142270.66  **
+                                                        ** test_fifo_hidden.fifo_simultaneous_write_read   FAIL          65.00           0.00      41616.51  **
+                                                        ** test_fifo_hidden.fifo_reset_clears_state        PASS         105.00           0.00     107941.65  **
+                                                        ** test_fifo_hidden.fifo_exact_capacity            FAIL         125.00           0.00      77294.41  **
+                                                        ** test_fifo_hidden.fifo_wrap_around               FAIL         115.00           0.00      75578.97  **
+                                                        *******************************************************************************************************
+                                                        ** TESTS=6 PASS=2 FAIL=4 SKIP=0                                 870.00           0.02      45222.71  **
+                                                        *******************************************************************************************************
+------------------------------ Captured log call -------------------------------
+INFO     Icarus:runner.py:632 Running command iverilog -o /tmp/grading_workspace_76d943db-b90f-4431-a754-b2aa66f5fc52/sim_build/sim.vvp -s fifo -g2012 /tmp/grading_workspace_76d943db-b90f-4431-a754-b2aa66f5fc52/sources/fifo.sv /tmp/grading_workspace_76d943db-b90f-4431-a754-b2aa66f5fc52/sources/fifo_ctrl.sv /tmp/grading_workspace_76d943db-b90f-4431-a754-b2aa66f5fc52/sources/fifo_mem.sv in directory /tmp/grading_workspace_76d943db-b90f-4431-a754-b2aa66f5fc52/sim_build
+INFO     Icarus:runner.py:632 Running command vvp -M /home/ubuntu/example-verilog-codebase/.venv/lib/python3.12/site-packages/cocotb/libs -m libcocotbvpi_icarus /tmp/grading_workspace_76d943db-b90f-4431-a754-b2aa66f5fc52/sim_build/sim.vvp -none in directory /tmp/grading_workspace_76d943db-b90f-4431-a754-b2aa66f5fc52/sim_build
+ERROR    Icarus:runner.py:572 ERROR: Failed 4 of 6 tests.
+__________________________ test_uart_tx_hidden_runner __________________________
+
+    def test_uart_tx_hidden_runner():
+        sim = os.getenv(\"SIM\", \"icarus\")
+        proj_path = Path(__file__).resolve().parent.parent
+    
+        sources = [
+            proj_path / \"sources\" /  \"uart_tx_top.sv\",
+            proj_path / \"sources\" / \"uart_tx.sv\",
+            proj_path / \"sources\" /  \"fifo.sv\",
+            proj_path / \"sources\" /  \"fifo_ctrl.sv\",
+            proj_path / \"sources\" /  \"fifo_mem.sv\",
+        ]
+    
+        runner = get_runner(sim)
+        runner.build(
+            sources=sources,
+            hdl_toplevel=\"uart_tx_top\",
+            always=True,
+            parameters={\"FlowControl\": 1},
+        )
+>       runner.test(hdl_toplevel=\"uart_tx_top\", test_module=\"test_uart_tx_hidden\")
+E       SystemExit: 1
+
+tests/test_uart_tx_hidden.py:313: SystemExit
+----------------------------- Captured stdout call -----------------------------
+     -.--ns INFO     gpi                                ..mbed/gpi_embed.cpp:93   in _embed_init_python              Using Python 3.12.4 interpreter at /home/ubuntu/example-verilog-codebase/.venv/bin/python
+     -.--ns INFO     gpi                                ../gpi/GpiCommon.cpp:79   in gpi_print_registered_impl       VPI registered
+     0.00ns INFO     cocotb                             Running on Icarus Verilog version 12.0 (stable)
+     0.00ns INFO     cocotb                             Seeding Python random module with 1774940354
+     0.00ns INFO     cocotb                             Initialized cocotb v2.0.1 from /home/ubuntu/example-verilog-codebase/.venv/lib/python3.12/site-packages/cocotb
+     0.00ns INFO     cocotb                             Running tests
+     0.00ns INFO     cocotb.regression                  running test_uart_tx_hidden.uart_tx_basic (1/8)
+                                                            Test TX path: send a single byte and verify the serial frame.
+ 82630.00ns INFO     cocotb.regression                  test_uart_tx_hidden.uart_tx_basic passed
+ 82630.00ns INFO     cocotb.regression                  running test_uart_tx_hidden.uart_tx_known_patterns (2/8)
+                                                            Test TX with known bit patterns pre-loaded to catch stale-data and bit-ordering bugs.
+165280.00ns WARNING  .._patterns.uart_tx_known_patterns Pattern mismatch at frame 0: sent 0x00 (00000000), received 0xff (11111111)
+                                                        assert 255 == 0
+                                                        Traceback (most recent call last):
+                                                          File \"/home/ubuntu/example-verilog-codebase/.venv/lib/python3.12/site-packages/cocotb/regression.py\", line 378, in func
+                                                            await with_timeout(f(*args, **kwargs), timeout, self._test.timeout_unit)
+                                                          File \"/home/ubuntu/example-verilog-codebase/.venv/lib/python3.12/site-packages/cocotb/_extended_awaitables.py\", line 411, in with_timeout
+                                                            res = await First(timeout_timer, trigger)
+                                                                  ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+                                                          File \"/home/ubuntu/example-verilog-codebase/.venv/lib/python3.12/site-packages/cocotb/_extended_awaitables.py\", line 203, in _wait
+                                                            return completed[0].result()
+                                                                   ^^^^^^^^^^^^^^^^^^^^^
+                                                          File \"/home/ubuntu/example-verilog-codebase/.venv/lib/python3.12/site-packages/cocotb/task.py\", line 450, in result
+                                                            return cast(\"Outcome[ResultType]\", self._outcome).get()
+                                                                   ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+                                                          File \"/home/ubuntu/example-verilog-codebase/.venv/lib/python3.12/site-packages/cocotb/_outcomes.py\", line 51, in get
+                                                            raise self.error
+                                                          File \"/home/ubuntu/example-verilog-codebase/.venv/lib/python3.12/site-packages/cocotb/_extended_awaitables.py\", line 73, in _wait_callback
+                                                            return await trigger
+                                                                   ^^^^^^^^^^^^^
+                                                          File \"/home/ubuntu/example-verilog-codebase/.venv/lib/python3.12/site-packages/cocotb/task.py\", line 493, in __await__
+                                                            return self.result()
+                                                                   ^^^^^^^^^^^^^
+                                                          File \"/home/ubuntu/example-verilog-codebase/.venv/lib/python3.12/site-packages/cocotb/task.py\", line 450, in result
+                                                            return cast(\"Outcome[ResultType]\", self._outcome).get()
+                                                                   ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+                                                          File \"/home/ubuntu/example-verilog-codebase/.venv/lib/python3.12/site-packages/cocotb/_outcomes.py\", line 51, in get
+                                                            raise self.error
+                                                          File \"/tmp/grading_workspace_76d943db-b90f-4431-a754-b2aa66f5fc52/tests/test_uart_tx_hidden.py\", line 119, in uart_tx_known_patterns
+                                                            assert got == val, (
+                                                        AssertionError: Pattern mismatch at frame 0: sent 0x00 (00000000), received 0xff (11111111)
+                                                        assert 255 == 0
+165280.00ns WARNING  cocotb.regression                  test_uart_tx_hidden.uart_tx_known_patterns failed
+165280.00ns INFO     cocotb.regression                  running test_uart_tx_hidden.uart_tx_back_to_back (3/8)
+                                                            Test TX path: load FIFO with multiple bytes, verify all serial frames.
+247910.00ns WARNING  ..ack_to_back.uart_tx_back_to_back TX mismatch at frame 0: sent 0xc7, received 0xc4
+                                                        assert 196 == 199
+                                                        Traceback (most recent call last):
+                                                          File \"/home/ubuntu/example-verilog-codebase/.venv/lib/python3.12/site-packages/cocotb/regression.py\", line 378, in func
+                                                            await with_timeout(f(*args, **kwargs), timeout, self._test.timeout_unit)
+                                                          File \"/home/ubuntu/example-verilog-codebase/.venv/lib/python3.12/site-packages/cocotb/_extended_awaitables.py\", line 411, in with_timeout
+                                                            res = await First(timeout_timer, trigger)
+                                                                  ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+                                                          File \"/home/ubuntu/example-verilog-codebase/.venv/lib/python3.12/site-packages/cocotb/_extended_awaitables.py\", line 203, in _wait
+                                                            return completed[0].result()
+                                                                   ^^^^^^^^^^^^^^^^^^^^^
+                                                          File \"/home/ubuntu/example-verilog-codebase/.venv/lib/python3.12/site-packages/cocotb/task.py\", line 450, in result
+                                                            return cast(\"Outcome[ResultType]\", self._outcome).get()
+                                                                   ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+                                                          File \"/home/ubuntu/example-verilog-codebase/.venv/lib/python3.12/site-packages/cocotb/_outcomes.py\", line 51, in get
+                                                            raise self.error
+                                                          File \"/home/ubuntu/example-verilog-codebase/.venv/lib/python3.12/site-packages/cocotb/_extended_awaitables.py\", line 73, in _wait_callback
+                                                            return await trigger
+                                                                   ^^^^^^^^^^^^^
+                                                          File \"/home/ubuntu/example-verilog-codebase/.venv/lib/python3.12/site-packages/cocotb/task.py\", line 493, in __await__
+                                                            return self.result()
+                                                                   ^^^^^^^^^^^^^
+                                                          File \"/home/ubuntu/example-verilog-codebase/.venv/lib/python3.12/site-packages/cocotb/task.py\", line 450, in result
+                                                            return cast(\"Outcome[ResultType]\", self._outcome).get()
+                                                                   ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+                                                          File \"/home/ubuntu/example-verilog-codebase/.venv/lib/python3.12/site-packages/cocotb/_outcomes.py\", line 51, in get
+                                                            raise self.error
+                                                          File \"/tmp/grading_workspace_76d943db-b90f-4431-a754-b2aa66f5fc52/tests/test_uart_tx_hidden.py\", line 148, in uart_tx_back_to_back
+                                                            await read_task
+                                                          File \"/home/ubuntu/example-verilog-codebase/.venv/lib/python3.12/site-packages/cocotb/task.py\", line 493, in __await__
+                                                            return self.result()
+                                                                   ^^^^^^^^^^^^^
+                                                          File \"/home/ubuntu/example-verilog-codebase/.venv/lib/python3.12/site-packages/cocotb/task.py\", line 450, in result
+                                                            return cast(\"Outcome[ResultType]\", self._outcome).get()
+                                                                   ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+                                                          File \"/home/ubuntu/example-verilog-codebase/.venv/lib/python3.12/site-packages/cocotb/_outcomes.py\", line 51, in get
+                                                            raise self.error
+                                                          File \"/tmp/grading_workspace_76d943db-b90f-4431-a754-b2aa66f5fc52/tests/test_uart_tx_hidden.py\", line 141, in read_all
+                                                            assert got == expected, (
+                                                        AssertionError: TX mismatch at frame 0: sent 0xc7, received 0xc4
+                                                        assert 196 == 199
+247910.00ns WARNING  cocotb.regression                  test_uart_tx_hidden.uart_tx_back_to_back failed
+247910.00ns INFO     cocotb.regression                  running test_uart_tx_hidden.uart_tx_idle_high (4/8)
+                                                            Test that o_tx stays high when there is nothing to transmit.
+249980.00ns INFO     cocotb.regression                  test_uart_tx_hidden.uart_tx_idle_high passed
+249980.00ns INFO     cocotb.regression                  running test_uart_tx_hidden.uart_tx_cts_flow_control (5/8)
+                                                            Test that TX does not transmit when CTS is de-asserted.
+358630.00ns INFO     cocotb.regression                  test_uart_tx_hidden.uart_tx_cts_flow_control passed
+358630.00ns INFO     cocotb.regression                  running test_uart_tx_hidden.uart_tx_cts_between_frames (6/8)
+                                                            Test CTS de-asserted between frames pauses TX.
+441260.01ns WARNING  ..rames.uart_tx_cts_between_frames Frame A mismatch: sent 0x54, got 0x47
+                                                        assert 71 == 84
+                                                        Traceback (most recent call last):
+                                                          File \"/home/ubuntu/example-verilog-codebase/.venv/lib/python3.12/site-packages/cocotb/regression.py\", line 378, in func
+                                                            await with_timeout(f(*args, **kwargs), timeout, self._test.timeout_unit)
+                                                          File \"/home/ubuntu/example-verilog-codebase/.venv/lib/python3.12/site-packages/cocotb/_extended_awaitables.py\", line 411, in with_timeout
+                                                            res = await First(timeout_timer, trigger)
+                                                                  ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+                                                          File \"/home/ubuntu/example-verilog-codebase/.venv/lib/python3.12/site-packages/cocotb/_extended_awaitables.py\", line 203, in _wait
+                                                            return completed[0].result()
+                                                                   ^^^^^^^^^^^^^^^^^^^^^
+                                                          File \"/home/ubuntu/example-verilog-codebase/.venv/lib/python3.12/site-packages/cocotb/task.py\", line 450, in result
+                                                            return cast(\"Outcome[ResultType]\", self._outcome).get()
+                                                                   ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+                                                          File \"/home/ubuntu/example-verilog-codebase/.venv/lib/python3.12/site-packages/cocotb/_outcomes.py\", line 51, in get
+                                                            raise self.error
+                                                          File \"/home/ubuntu/example-verilog-codebase/.venv/lib/python3.12/site-packages/cocotb/_extended_awaitables.py\", line 73, in _wait_callback
+                                                            return await trigger
+                                                                   ^^^^^^^^^^^^^
+                                                          File \"/home/ubuntu/example-verilog-codebase/.venv/lib/python3.12/site-packages/cocotb/task.py\", line 493, in __await__
+                                                            return self.result()
+                                                                   ^^^^^^^^^^^^^
+                                                          File \"/home/ubuntu/example-verilog-codebase/.venv/lib/python3.12/site-packages/cocotb/task.py\", line 450, in result
+                                                            return cast(\"Outcome[ResultType]\", self._outcome).get()
+                                                                   ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+                                                          File \"/home/ubuntu/example-verilog-codebase/.venv/lib/python3.12/site-packages/cocotb/_outcomes.py\", line 51, in get
+                                                            raise self.error
+                                                          File \"/tmp/grading_workspace_76d943db-b90f-4431-a754-b2aa66f5fc52/tests/test_uart_tx_hidden.py\", line 204, in uart_tx_cts_between_frames
+                                                            assert got_a == val_a, f\"Frame A mismatch: sent {val_a:#04x}, got {got_a:#04x}\"
+                                                        AssertionError: Frame A mismatch: sent 0x54, got 0x47
+                                                        assert 71 == 84
+441260.01ns WARNING  cocotb.regression                  test_uart_tx_hidden.uart_tx_cts_between_frames failed
+441260.01ns INFO     cocotb.regression                  running test_uart_tx_hidden.uart_tx_fifo_full (7/8)
+                                                            Test that o_tx_rdy goes low when FIFO is full.
+441510.01ns WARNING  ..t_tx_fifo_full.uart_tx_fifo_full o_tx_rdy should be 0 when FIFO is full
+                                                        assert Logic('1') == 0
+                                                         +  where Logic('1') = LogicObject(uart_tx_top.o_tx_rdy).value
+                                                         +    where LogicObject(uart_tx_top.o_tx_rdy) = HierarchyObject(uart_tx_top).o_tx_rdy
+                                                        Traceback (most recent call last):
+                                                          File \"/home/ubuntu/example-verilog-codebase/.venv/lib/python3.12/site-packages/cocotb/regression.py\", line 378, in func
+                                                            await with_timeout(f(*args, **kwargs), timeout, self._test.timeout_unit)
+                                                          File \"/home/ubuntu/example-verilog-codebase/.venv/lib/python3.12/site-packages/cocotb/_extended_awaitables.py\", line 411, in with_timeout
+                                                            res = await First(timeout_timer, trigger)
+                                                                  ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+                                                          File \"/home/ubuntu/example-verilog-codebase/.venv/lib/python3.12/site-packages/cocotb/_extended_awaitables.py\", line 203, in _wait
+                                                            return completed[0].result()
+                                                                   ^^^^^^^^^^^^^^^^^^^^^
+                                                          File \"/home/ubuntu/example-verilog-codebase/.venv/lib/python3.12/site-packages/cocotb/task.py\", line 450, in result
+                                                            return cast(\"Outcome[ResultType]\", self._outcome).get()
+                                                                   ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+                                                          File \"/home/ubuntu/example-verilog-codebase/.venv/lib/python3.12/site-packages/cocotb/_outcomes.py\", line 51, in get
+                                                            raise self.error
+                                                          File \"/home/ubuntu/example-verilog-codebase/.venv/lib/python3.12/site-packages/cocotb/_extended_awaitables.py\", line 73, in _wait_callback
+                                                            return await trigger
+                                                                   ^^^^^^^^^^^^^
+                                                          File \"/home/ubuntu/example-verilog-codebase/.venv/lib/python3.12/site-packages/cocotb/task.py\", line 493, in __await__
+                                                            return self.result()
+                                                                   ^^^^^^^^^^^^^
+                                                          File \"/home/ubuntu/example-verilog-codebase/.venv/lib/python3.12/site-packages/cocotb/task.py\", line 450, in result
+                                                            return cast(\"Outcome[ResultType]\", self._outcome).get()
+                                                                   ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+                                                          File \"/home/ubuntu/example-verilog-codebase/.venv/lib/python3.12/site-packages/cocotb/_outcomes.py\", line 51, in get
+                                                            raise self.error
+                                                          File \"/tmp/grading_workspace_76d943db-b90f-4431-a754-b2aa66f5fc52/tests/test_uart_tx_hidden.py\", line 237, in uart_tx_fifo_full
+                                                            assert dut.o_tx_rdy.value == 0, \"o_tx_rdy should be 0 when FIFO is full\"
+                                                        AssertionError: o_tx_rdy should be 0 when FIFO is full
+                                                        assert Logic('1') == 0
+                                                         +  where Logic('1') = LogicObject(uart_tx_top.o_tx_rdy).value
+                                                         +    where LogicObject(uart_tx_top.o_tx_rdy) = HierarchyObject(uart_tx_top).o_tx_rdy
+441510.01ns WARNING  cocotb.regression                  test_uart_tx_hidden.uart_tx_fifo_full failed
+441510.01ns INFO     cocotb.regression                  running test_uart_tx_hidden.uart_tx_reset_mid_frame (8/8)
+                                                            Test that reset during transmission returns o_tx to idle high.
+550340.01ns INFO     cocotb.regression                  test_uart_tx_hidden.uart_tx_reset_mid_frame passed
+550340.01ns INFO     cocotb.regression                  ********************************************************************************************************
+                                                        ** TEST                                            STATUS  SIM TIME (ns)  REAL TIME (s)  RATIO (ns/s) **
+                                                        ********************************************************************************************************
+                                                        ** test_uart_tx_hidden.uart_tx_basic                PASS       82630.00           0.14     582141.04  **
+                                                        ** test_uart_tx_hidden.uart_tx_known_patterns       FAIL       82650.00           0.16     509129.61  **
+                                                        ** test_uart_tx_hidden.uart_tx_back_to_back         FAIL       82630.00           0.26     318623.17  **
+                                                        ** test_uart_tx_hidden.uart_tx_idle_high            PASS        2070.00           0.01     229590.89  **
+                                                        ** test_uart_tx_hidden.uart_tx_cts_flow_control     PASS      108650.00           0.26     422527.90  **
+                                                        ** test_uart_tx_hidden.uart_tx_cts_between_frames   FAIL       82630.00           0.14     575499.10  **
+                                                        ** test_uart_tx_hidden.uart_tx_fifo_full            FAIL         250.00           0.00     124135.91  **
+                                                        ** test_uart_tx_hidden.uart_tx_reset_mid_frame      PASS      108830.00           0.20     534603.79  **
+                                                        ********************************************************************************************************
+                                                        ** TESTS=8 PASS=4 FAIL=4 SKIP=0                               550340.01           1.19     461018.30  **
+                                                        ********************************************************************************************************
+------------------------------ Captured log call -------------------------------
+INFO     Icarus:runner.py:632 Running command iverilog -o /tmp/grading_workspace_76d943db-b90f-4431-a754-b2aa66f5fc52/sim_build/sim.vvp -s uart_tx_top -g2012 -Puart_tx_top.FlowControl=1 /tmp/grading_workspace_76d943db-b90f-4431-a754-b2aa66f5fc52/sources/uart_tx_top.sv /tmp/grading_workspace_76d943db-b90f-4431-a754-b2aa66f5fc52/sources/uart_tx.sv /tmp/grading_workspace_76d943db-b90f-4431-a754-b2aa66f5fc52/sources/fifo.sv /tmp/grading_workspace_76d943db-b90f-4431-a754-b2aa66f5fc52/sources/fifo_ctrl.sv /tmp/grading_workspace_76d943db-b90f-4431-a754-b2aa66f5fc52/sources/fifo_mem.sv in directory /tmp/grading_workspace_76d943db-b90f-4431-a754-b2aa66f5fc52/sim_build
+INFO     Icarus:runner.py:632 Running command vvp -M /home/ubuntu/example-verilog-codebase/.venv/lib/python3.12/site-packages/cocotb/libs -m libcocotbvpi_icarus /tmp/grading_workspace_76d943db-b90f-4431-a754-b2aa66f5fc52/sim_build/sim.vvp -none in directory /tmp/grading_workspace_76d943db-b90f-4431-a754-b2aa66f5fc52/sim_build
+ERROR    Icarus:runner.py:572 ERROR: Failed 4 of 8 tests.
+=========================== short test summary info ============================
+FAILED tests/test_fifo_hidden.py::test_fifo_hidden_runner - SystemExit: 1
+FAILED tests/test_uart_tx_hidden.py::test_uart_tx_hidden_runner - SystemExit: 1
+============================== 2 failed in 2.11s ===============================
+
+</system-out>
+      <system-err>
+
+</system-err>
+    </testcase>
+  </testsuite>
+</testsuites>",
+    "agent_patch": "diff --git a/sources/fifo.sv b/sources/fifo.sv
+index a056f66..fa99dad 100644
+--- a/sources/fifo.sv
++++ b/sources/fifo.sv
+@@ -16,12 +16,48 @@ module fifo #(
+   output logic                 o_empty
+ );
+ 
+-  // TODO: Implement FIFO top-level
+-  //
+-  // Requirements:
+-  //   - Instantiate fifo_mem for storage (dual-port RAM, async read, sync write)
+-  //   - Instantiate fifo_ctrl for pointer management and flag generation
+-  //   - If FWFT == 1: o_rd_data always reflects the head of the FIFO (combinational read)
+-  //   - If FWFT == 0: o_rd_data is gated by i_rd_en (output 0 when not reading)
++  // Internal signals
++  logic [PtrWidth-1:0] wr_addr, rd_addr;
++  logic [DataWidth-1:0] rd_data_mem;
++  
++  // FIFO controller instance
++  fifo_ctrl #(
++    .DataWidth(DataWidth),
++    .Depth(Depth)
++  ) u_fifo_ctrl (
++    .i_clk(i_clk),
++    .i_rst_n(i_rst_n),
++    .i_wr_en(i_wr_en),
++    .i_rd_en(i_rd_en),
++    .o_wr_addr(wr_addr),
++    .o_rd_addr(rd_addr),
++    .o_full(o_full),
++    .o_empty(o_empty)
++  );
++  
++  // FIFO memory instance
++  fifo_mem #(
++    .DataWidth(DataWidth),
++    .Depth(Depth)
++  ) u_fifo_mem (
++    .i_clk(i_clk),
++    .i_wr_en(i_wr_en && !o_full),
++    .i_wr_addr(wr_addr),
++    .i_wr_data(i_wr_data),
++    .i_rd_addr(rd_addr),
++    .o_rd_data(rd_data_mem)
++  );
++  
++  // Output data logic based on FWFT parameter
++  generate
++    if (FWFT == 1) begin : gen_fwft
++      // First-Word Fall-Through: data is always available
++      assign o_rd_data = rd_data_mem;
++    end else begin : gen_normal
++      // Normal mode: gate output with read enable
++      assign o_rd_data = i_rd_en ? rd_data_mem : '0;
++    end
++  endgenerate
+ 
+ endmodule
++
+diff --git a/sources/fifo_ctrl.sv b/sources/fifo_ctrl.sv
+index 177bd29..717ae16 100644
+--- a/sources/fifo_ctrl.sv
++++ b/sources/fifo_ctrl.sv
+@@ -15,14 +15,63 @@ module fifo_ctrl #(
+   output logic                o_empty
+ );
+ 
+-  // TODO: Implement FIFO controller
+-  //
+-  // Requirements:
+-  //   - Maintain read and write pointers (PtrWidth+1 bits wide for wrap-around detection)
+-  //   - Increment write pointer on i_wr_en, increment read pointer on i_rd_en
+-  //   - Reset both pointers to 0 on !i_rst_n
+-  //   - o_wr_addr and o_rd_addr are the lower PtrWidth bits of the respective pointers
+-  //   - o_full: MSBs differ but lower bits match (write pointer has lapped read pointer)
+-  //   - o_empty: both pointers are identical (same MSB and lower bits)
++  // Pointer registers (one extra bit for wrap-around detection)
++  logic [PtrWidth:0] wr_ptr, rd_ptr;
++  logic [PtrWidth:0] wr_ptr_next, rd_ptr_next;
++  
++  // Next pointer values (for combinational logic)
++  assign wr_ptr_next = wr_ptr + 1'b1;
++  assign rd_ptr_next = rd_ptr + 1'b1;
++  
++  // Address outputs - use current pointer values (before any updates)
++  assign o_wr_addr = wr_ptr[PtrWidth-1:0];
++  assign o_rd_addr = rd_ptr[PtrWidth-1:0];
++  
++  // Status flags
++  assign o_empty = (wr_ptr == rd_ptr);
++  assign o_full  = (wr_ptr[PtrWidth] != rd_ptr[PtrWidth]) && (wr_ptr[PtrWidth-1:0] == rd_ptr[PtrWidth-1:0]);
++  
++  // Delayed signals for pointer updates
++  logic wr_en_d, rd_en_d;
++  logic was_full_d, was_empty_d;
++  
++  // Register the enable signals to delay pointer updates
++  always_ff @(posedge i_clk or negedge i_rst_n) begin
++    if (!i_rst_n) begin
++      wr_en_d <= 1'b0;
++      rd_en_d <= 1'b0;
++      was_full_d <= 1'b0;
++      was_empty_d <= 1'b1;
++    end else begin
++      wr_en_d <= i_wr_en;
++      rd_en_d <= i_rd_en;
++      was_full_d <= o_full;
++      was_empty_d <= o_empty;
++    end
++  end
++  
++  // Pointer update logic - use delayed signals so updates happen after memory operation
++  always_ff @(posedge i_clk or negedge i_rst_n) begin
++    if (!i_rst_n) begin
++      wr_ptr <= '0;
++      rd_ptr <= '0;
++    end else begin
++      // Write pointer updates one cycle after successful write
++      if (wr_en_d && !was_full_d) begin
++        wr_ptr <= wr_ptr + 1'b1;
++      end
++      // Read pointer updates one cycle after successful read  
++      if (rd_en_d && !was_empty_d) begin
++        rd_ptr <= rd_ptr + 1'b1;
++      end
++    end
++  end
+ 
+ endmodule
++
++
++
++
++
++
++
+diff --git a/sources/fifo_mem.sv b/sources/fifo_mem.sv
+index a7b23a3..7e5b821 100644
+--- a/sources/fifo_mem.sv
++++ b/sources/fifo_mem.sv
+@@ -13,12 +13,26 @@ module fifo_mem #(
+   output logic [DataWidth-1:0] o_rd_data
+ );
+ 
+-  // TODO: Implement dual-port RAM
+-  //
+-  // Requirements:
+-  //   - Storage array: DataWidth-bit words, Depth entries deep
+-  //   - Asynchronous (combinational) read: o_rd_data = memory[i_rd_addr]
+-  //   - Synchronous write: on posedge i_clk, if i_wr_en, write i_wr_data to memory[i_wr_addr]
+-  //   - No reset required for memory contents
++  // Storage array
++  logic [DataWidth-1:0] memory [Depth-1:0];
++  
++  // Initialize memory to avoid X propagation in simulation
++  initial begin
++    for (int i = 0; i < Depth; i++) begin
++      memory[i] = '0;
++    end
++  end
++  
++  // Asynchronous read
++  assign o_rd_data = memory[i_rd_addr];
++  
++  // Synchronous write
++  always_ff @(posedge i_clk) begin
++    if (i_wr_en) begin
++      memory[i_wr_addr] <= i_wr_data;
++    end
++  end
+ 
+ endmodule
++
++
+diff --git a/sources/uart_tx.sv b/sources/uart_tx.sv
+index b3e7135..da6f334 100644
+--- a/sources/uart_tx.sv
++++ b/sources/uart_tx.sv
+@@ -8,7 +8,7 @@ module uart_tx #(
+ )(
+   /* Main Signals */
+   input  logic                  i_clk,
+-  input  logic 	                i_rst_n,
++  input  logic                  i_rst_n,
+   /* UART Signals */
+   output logic                  o_tx,
+   input  logic                  i_cts,
+@@ -22,23 +22,138 @@ module uart_tx #(
+   localparam ClkCounterWidth = $clog2(CyclesPerBit);
+   localparam BitCounterWidth = $clog2(DataLength);
+ 
+-  // TODO: Implement TX shift-register FSM
+-  //
+-  // States: RESET -> WAIT -> START -> DATA -> (optional PARITY) -> STOP -> DONE -> WAIT
+-  //
+-  // Requirements:
+-  //   - In WAIT state, begin transmission only when TX FIFO is not empty
+-  //     (and if FlowControl is enabled, only when i_cts is asserted)
+-  //   - START state: drive o_tx low for one bit period (CyclesPerBit clocks)
+-  //   - DATA state: shift out DataLength bits LSB-first, one bit period each
+-  //     The FIFO uses First-Word Fall-Through (FWFT), so i_tx_fifo_data holds
+-  //     the current word stable throughout transmission. You may either index it
+-  //     directly with a bit counter, or copy it into a local shift register on
+-  //     the WAIT->START transition. If using a shift register, be careful not to
+-  //     shift during START — only begin shifting once DATA state begins.
+-  //   - STOP state: drive o_tx high for one bit period
+-  //   - DONE state: pulse o_tx_fifo_read_en to advance the FIFO to the next word
+-  //   - o_tx must be registered (driven from a flip-flop, not combinational)
+-  //   - o_tx idles high, resets high
++  // FSM States
++  typedef enum logic [2:0] {
++    WAIT  = 3'b000,
++    START = 3'b001,
++    DATA  = 3'b010,
++    STOP  = 3'b011,
++    DONE  = 3'b100
++  } state_t;
++  
++  state_t current_state, next_state;
++  
++  // Internal registers
++  logic [ClkCounterWidth-1:0] clk_counter;
++  logic [BitCounterWidth-1:0] bit_counter;
++  logic [DataLength-1:0] tx_shift_reg;
++  logic tx_out;
++  
++  // Clock counter for bit timing
++  logic bit_done;
++  assign bit_done = (clk_counter == CyclesPerBit - 1);
++  
++  // Flow control condition
++  logic can_transmit;
++  assign can_transmit = FlowControl ? (!i_tx_fifo_empty && i_cts) : !i_tx_fifo_empty;
++  
++  // State machine
++  always_ff @(posedge i_clk or negedge i_rst_n) begin
++    if (!i_rst_n) begin
++      current_state <= WAIT;
++    end else begin
++      current_state <= next_state;
++    end
++  end
++  
++  // Next state logic
++  always_comb begin
++    next_state = current_state;
++    case (current_state)
++      WAIT: begin
++        if (can_transmit) begin
++          next_state = START;
++        end
++      end
++      START: begin
++        if (bit_done) begin
++          next_state = DATA;
++        end
++      end
++      DATA: begin
++        if (bit_done && (bit_counter == DataLength - 1)) begin
++          next_state = STOP;
++        end
++      end
++      STOP: begin
++        if (bit_done) begin
++          next_state = DONE;
++        end
++      end
++      DONE: begin
++        next_state = WAIT;
++      end
++      default: next_state = WAIT;
++    endcase
++  end
++  
++  // Clock counter
++  always_ff @(posedge i_clk or negedge i_rst_n) begin
++    if (!i_rst_n) begin
++      clk_counter <= '0;
++    end else begin
++      if (current_state == WAIT || current_state == DONE || bit_done) begin
++        clk_counter <= '0;
++      end else begin
++        clk_counter <= clk_counter + 1'b1;
++      end
++    end
++  end
++  
++  // Bit counter (for DATA state)
++  always_ff @(posedge i_clk or negedge i_rst_n) begin
++    if (!i_rst_n) begin
++      bit_counter <= '0;
++    end else begin
++      if (current_state == DATA && bit_done) begin
++        bit_counter <= bit_counter + 1'b1;
++      end else if (current_state != DATA) begin
++        bit_counter <= '0;
++      end
++    end
++  end
++  
++  // Shift register (load on WAIT->START transition)
++  always_ff @(posedge i_clk or negedge i_rst_n) begin
++    if (!i_rst_n) begin
++      tx_shift_reg <= '0;
++    end else begin
++      if (current_state == WAIT && next_state == START) begin
++        // Load data from FIFO
++        tx_shift_reg <= i_tx_fifo_data;
++      end else if (current_state == DATA && bit_done) begin
++        // Shift right to send LSB first
++        tx_shift_reg <= tx_shift_reg >> 1;
++      end
++    end
++  end
++  
++  // TX output logic
++  always_ff @(posedge i_clk or negedge i_rst_n) begin
++    if (!i_rst_n) begin
++      tx_out <= 1'b1; // Idle high
++    end else begin
++      case (current_state)
++        WAIT, DONE: tx_out <= 1'b1;        // Idle high
++        START:      tx_out <= 1'b0;        // Start bit (low)
++        DATA:       tx_out <= tx_shift_reg[0]; // Data bits LSB first
++        STOP:       tx_out <= 1'b1;        // Stop bit (high)
++        default:    tx_out <= 1'b1;
++      endcase
++    end
++  end
++  
++  // FIFO read enable (pulse in DONE state)
++  always_ff @(posedge i_clk or negedge i_rst_n) begin
++    if (!i_rst_n) begin
++      o_tx_fifo_read_en <= 1'b0;
++    end else begin
++      o_tx_fifo_read_en <= (current_state == DONE);
++    end
++  end
++  
++  // Output assignment
++  assign o_tx = tx_out;
+ 
+ endmodule
++
+diff --git a/sources/uart_tx_top.sv b/sources/uart_tx_top.sv
+index 0b297d1..84ec24d 100644
+--- a/sources/uart_tx_top.sv
++++ b/sources/uart_tx_top.sv
+@@ -19,13 +19,48 @@ module uart_tx_top #(
+   input  logic        i_cts
+ );
+ 
+-  // TODO: Implement internal logic
+-  //
+-  // Required submodules and logic:
+-  //   - TX FIFO (fifo instance, FWFT mode) for transmit data buffering
+-  //   - uart_tx instance for serial transmission
+-  //   - o_tx_rdy driven from TX FIFO full flag (inverted)
+-  //   - Wire the FIFO's read data and empty flag to uart_tx's inputs
+-  //   - Wire uart_tx's o_tx_fifo_read_en back to the FIFO's read enable
++  // Internal signals between FIFO and UART TX
++  logic [DataLength-1:0] fifo_rd_data;
++  logic fifo_empty;
++  logic fifo_full;
++  logic fifo_rd_en;
++  
++  // TX FIFO instance (FWFT mode for stable data during transmission)
++  fifo #(
++    .DataWidth(DataLength),
++    .Depth(FifoDepth),
++    .FWFT(1)
++  ) u_tx_fifo (
++    .i_clk(i_clk),
++    .i_rst_n(i_rst_n),
++    .i_wr_data(i_tx_data),
++    .i_wr_en(i_tx_req),
++    .i_rd_en(fifo_rd_en),
++    .o_rd_data(fifo_rd_data),
++    .o_full(fifo_full),
++    .o_empty(fifo_empty)
++  );
++  
++  // UART TX instance
++  uart_tx #(
++    .SystemClockFreq(SystemClockFreq),
++    .BaudRate(BaudRate),
++    .Parity(1'b0),
++    .StopBit(1'b1),
++    .DataLength(DataLength),
++    .FlowControl(FlowControl)
++  ) u_uart_tx (
++    .i_clk(i_clk),
++    .i_rst_n(i_rst_n),
++    .o_tx(o_tx),
++    .i_cts(i_cts),
++    .i_tx_fifo_data(fifo_rd_data),
++    .i_tx_fifo_empty(fifo_empty),
++    .o_tx_fifo_read_en(fifo_rd_en)
++  );
++  
++  // TX ready signal (inverted full flag)
++  assign o_tx_rdy = !fifo_full;
+ 
+ endmodule
++
+"
+  }
+}
